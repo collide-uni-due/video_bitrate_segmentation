@@ -48,7 +48,8 @@ class BitrateExtractor:
         execute_on_commandline(video_data_commands)
 
     def _extract_video_meta_data(self, file_path):
-        video_data_commands = ["ffprobe", file_path,
+        print(str(file_path))
+        video_data_commands = ["ffprobe", str(file_path),
                                "-v", "quiet",
                                "-select_streams", "v",
                                "-show_streams",
@@ -64,14 +65,14 @@ class BitrateExtractor:
         return result
 
     def _extract_frame_data(self, video_file_path):
-        with tempfile.TemporaryDirectory as temp_dir:
+        with tempfile.TemporaryDirectory() as temp_dir:
             video_file_path = pl.Path(video_file_path)
             if self.reencode_video:
                 temp_file_path = pl.Path(temp_dir) / video_file_path.name
                 self._reencode(video_file_path, temp_file_path)
                 video_file_path = temp_file_path
             video_file_path = pl.Path(video_file_path)
-            frame_data_commands = ["ffprobe", video_file_path,
+            frame_data_commands = ["ffprobe", str(video_file_path),
                                    "-show_frames",
                                    "-select_streams", "v",
                                    "-print_format", "json"]
